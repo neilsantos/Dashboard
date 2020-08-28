@@ -29,7 +29,7 @@ namespace Dashboard.Infraestrutura
             Inventario.Add(produto);
             var maxId = Inventario.Max(x => x.Id);
             produto.Id = ++maxId;
-
+            
         }
     
         public void Atualizar(Produto produto)
@@ -50,6 +50,9 @@ namespace Dashboard.Infraestrutura
             Inventario.Remove(item);
         }
 
+       
         
+
+
     }
 }

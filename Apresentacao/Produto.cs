@@ -16,7 +16,6 @@ namespace Dashboard
 
         private readonly List<Produto> acessorios;
         public IEnumerable<Produto> Acessorios => acessorios; 
-
         
         public Produto(string nome, Categoria categoria, Marca marca, float valor)
         {
@@ -26,16 +25,19 @@ namespace Dashboard
             Valor = valor;
             acessorios = new List<Produto>();
         }
-
-        public void AdicionarAcessorio(string nome, float valor=0)
+        public void AdicionarAcessorio(string nome, float valor = 0)
         {
-           var produto = new Produto(nome, Categoria, Marca, valor);
-            acessorios.Add(produto);
+            var acessorio = new Produto(nome, Categoria, Marca, valor);
+            acessorios.Add(acessorio);
+            var maxId = acessorios.Max(x => x.Id);
+            acessorio.Id = ++maxId;
         }
         public void AdicionarAcessorio(string nome, float valor, Marca marca)
         {
-            var produto = new Produto(nome, Categoria, marca, valor);
-            acessorios.Add(produto);
+            var acessorio = new Produto(nome, Categoria, marca, valor);
+            acessorios.Add(acessorio);
+            var maxId = acessorios.Max(x => x.Id);
+            acessorio.Id = ++maxId;
         }
         public void DeletarAcessorio(string nome)
         {
@@ -69,19 +71,12 @@ namespace Dashboard
 
             }
         }
-        public Produto PocurarAcessorio(string nome)
+        public Produto PocurarAcessorio(int id)
         {
-            var acessorio = acessorios.FirstOrDefault(X => X.Nome == nome);
+            var acessorio = acessorios.FirstOrDefault(X => X.Id == id);
             return acessorio;
         }
     
-        
-    
     }
-
-
-
-
-
 
 }
