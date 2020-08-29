@@ -17,6 +17,7 @@ namespace Dashboard
         private readonly List<Produto> acessorios;
         public IEnumerable<Produto> Acessorios => acessorios; 
         
+        
         public Produto(string nome, Categoria categoria, Marca marca, float valor)
         {
             Nome = nome;
@@ -25,6 +26,13 @@ namespace Dashboard
             Valor = valor;
             acessorios = new List<Produto>();
         }
+
+        
+        public IEnumerable<Produto> LerAcessorios()
+        {
+            return Acessorios;
+        }
+        
         public void AdicionarAcessorio(string nome, float valor = 0)
         {
             var acessorio = new Produto(nome, Categoria, Marca, valor);
@@ -32,6 +40,7 @@ namespace Dashboard
             var maxId = acessorios.Max(x => x.Id);
             acessorio.Id = ++maxId;
         }
+        
         public void AdicionarAcessorio(string nome, float valor, Marca marca)
         {
             var acessorio = new Produto(nome, Categoria, marca, valor);
@@ -39,44 +48,23 @@ namespace Dashboard
             var maxId = acessorios.Max(x => x.Id);
             acessorio.Id = ++maxId;
         }
-        public void DeletarAcessorio(string nome)
+        
+        public void AtualizarAcessorio(Produto acessorio)
         {
-            if (!acessorios.Any())
-            {
-                Console.WriteLine("Não Há Acessorios Cadastrados");
-                Console.ReadKey();
-                return;
-            }
-            var item = acessorios.FirstOrDefault(X => X.Nome == nome);
+            var item = Acessorios.FirstOrDefault(x => x.Id == acessorio.Id);
             if (item == null)
             {
-                Console.WriteLine("Item Não Encontrado!");
-                return;
+                throw new Exception("Item Não Encontrado");
             }
-            Console.WriteLine("Nome: " + item.Nome);
-            Console.WriteLine("Categoria: " + item.Categoria.Nome);
-            Console.WriteLine("Marca: " + item.Marca.Nome);
-            Console.WriteLine("Valor: " + item.Valor);
-            Console.WriteLine("\n Deseja mesmo Excluir?(S/N)");
-            var opcao = Console.ReadLine().ToUpper();
-            if (opcao == "S")
-            {
-                acessorios.Remove(item);
-                Console.WriteLine("Acessorio Removido com Sucesso");
-
-            }
-            if (opcao == "N")
-            {
-                Console.WriteLine("Operação Cancelada!");
-
-            }
+            acessorios.Remove(item);
+            acessorios.Add(acessorio);
         }
-        public Produto PocurarAcessorio(int id)
+       
+        public void RemoverAcessorio(Produto acessorio)
         {
-            var acessorio = acessorios.FirstOrDefault(X => X.Id == id);
-            return acessorio;
+            var item = acessorios.FirstOrDefault(x => x.Id == acessorio.Id);
+            acessorios.Remove(item);
         }
-    
     }
 
 }
