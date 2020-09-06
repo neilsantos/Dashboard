@@ -12,7 +12,7 @@ namespace Dashboard.Infraestrutura
 
         public RepositorioCategoria()
         {
-            PopularCategoria();
+            //PopularCategoria();
         }
 
         private readonly List<Categoria> Categorias = new List<Categoria>();
@@ -41,10 +41,10 @@ namespace Dashboard.Infraestrutura
 
         public Categoria Adicionar(Categoria categoria)
         {
-            int maiorId = Categorias.Max(X => X.Id);
-
-            categoria.Id = ++maiorId;
+            
             Categorias.Add(categoria);
+            int maiorId = Categorias.Max(X => X.Id);
+            categoria.Id = ++maiorId;
             return categoria;
         }
 

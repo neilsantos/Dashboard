@@ -9,7 +9,7 @@ namespace Dashboard.Infraestrutura
     {
         public RepositorioMarca()
         {
-            PopularResitorio();
+            //PopularResitorio();
         }
 
         private readonly List<Marca> Marcas = new List<Marca>();
@@ -39,10 +39,10 @@ namespace Dashboard.Infraestrutura
 
         public Marca Adicionar(Marca marca)
         {
-            int maiorId = Marcas.Max(X => X.Id);
-           
-            marca.Id = ++maiorId;
+            
             Marcas.Add(marca);
+            int maiorId = Marcas.Max(X => X.Id);
+            marca.Id = ++maiorId;
             return marca;
         }
 

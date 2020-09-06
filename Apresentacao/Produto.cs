@@ -9,14 +9,30 @@ namespace Dashboard
     class Produto:EntidadeBase
     {
         public string Nome { get; set; }
-        public Categoria Categoria { get; set; }
-        public Marca Marca{ get; set; }
-
-        public float Valor { get; set; }
-
-        private readonly List<Produto> acessorios;
-        public IEnumerable<Produto> Acessorios => acessorios; 
+       
+        private Categoria categoria;
         
+        public Categoria Categoria 
+        { 
+           get => categoria; 
+           set
+            {
+                if (ProdutoPai != null && value != ProdutoPai.Categoria)
+                    throw new Exception("A Categoria Deve Ser " + ProdutoPai.Categoria.Nome);
+                categoria = value;
+            }
+        
+        }
+        
+        public Marca Marca{ get; set; }
+        
+        public float Valor { get; set; }
+        
+        private readonly List<Produto> acessorios;
+      
+        public IEnumerable<Produto> Acessorios => acessorios;
+
+        private Produto ProdutoPai { get; set; }
         
         public Produto(string nome, Categoria categoria, Marca marca, float valor)
         {
@@ -27,7 +43,6 @@ namespace Dashboard
             acessorios = new List<Produto>();
         }
 
-        
         public IEnumerable<Produto> LerAcessorios()
         {
             return Acessorios;
@@ -36,6 +51,7 @@ namespace Dashboard
         public void AdicionarAcessorio(string nome, float valor = 0)
         {
             var acessorio = new Produto(nome, Categoria, Marca, valor);
+            acessorio.ProdutoPai = this;
             acessorios.Add(acessorio);
             var maxId = acessorios.Max(x => x.Id);
             acessorio.Id = ++maxId;
@@ -51,7 +67,7 @@ namespace Dashboard
         
         public void AtualizarAcessorio(Produto acessorio)
         {
-            var item = Acessorios.FirstOrDefault(x => x.Id == acessorio.Id);
+            var item = acessorios.FirstOrDefault(x => x.Id == acessorio.Id);
             if (item == null)
             {
                 throw new Exception("Item Não Encontrado");
@@ -64,6 +80,7 @@ namespace Dashboard
         {
             var item = acessorios.FirstOrDefault(x => x.Id == acessorio.Id);
             acessorios.Remove(item);
+       
         }
     }
 

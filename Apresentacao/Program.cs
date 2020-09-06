@@ -6,20 +6,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Dashboard
 {
     class Program
     {
-        public static RepositorioMarca repositorioMarcas = new RepositorioMarca();
-        public static RepositorioCategoria repositorioCategoria = new RepositorioCategoria();
-        public static RepositorioProduto repositorioProduto = new RepositorioProduto();
+        public static RepositorioArquivoMarca repositorioMarcas = new RepositorioArquivoMarca();
+        public static RepositorioArquivoCategoria repositorioCategorias = new RepositorioArquivoCategoria();
+        public static RepositorioArquivoProduto repositorioProduto = new RepositorioArquivoProduto();
         
 
         static void Main(string[] args)
         {
+            //var classe1 = new Classe1();
+            //return;
             var marcas = repositorioMarcas.Ler();
-            var categorias = repositorioCategoria.Ler();
+            var categorias = repositorioCategorias.Ler();
             var inventario = repositorioProduto.Ler();
          
             //Menu
@@ -80,10 +83,10 @@ namespace Dashboard
 
                     case 6:
                         Console.Clear();
-                        if (!inventario.Any())
+                        if (inventario.Any())
                         {
                             Console.WriteLine("Não Há Itens a ser mostrado");
-                            Thread.Sleep(2000);
+                            Console.ReadKey();
                             break;
                         }
                         var categoria = LerCategoria();
@@ -92,10 +95,10 @@ namespace Dashboard
                         break;
                     case 7:
                         Console.Clear();
-                        if (!inventario.Any())
+                        if (inventario.Any())
                         {
                             Console.WriteLine("Não Há Itens a ser mostrado");
-                            Thread.Sleep(2000);
+                            Console.ReadKey();
                             break;
                         }
                         var marca = LerMarca();
@@ -158,7 +161,7 @@ namespace Dashboard
         private static void MostrarCategorias()
         {
             Console.WriteLine("Lista de Categoria\n");
-            foreach (var categoria in repositorioCategoria.Ler())
+            foreach (var categoria in repositorioCategorias.Ler())
             {
                 Console.WriteLine(categoria.Id + " - " + categoria.Nome);
             }
@@ -209,7 +212,7 @@ namespace Dashboard
         private static void CadastrarProduto()
         {
             IEnumerable<Marca> marcas = repositorioMarcas.Ler();
-            IEnumerable<Categoria> categorias = repositorioCategoria.Ler();
+            IEnumerable<Categoria> categorias = repositorioCategorias.Ler();
             IEnumerable<Produto> inventario = repositorioProduto.Ler();
             Console.Clear();
 
@@ -280,7 +283,7 @@ namespace Dashboard
 
             bool eValido = true;
             int idCategoria=0;
-            var idsCategoria = repositorioCategoria.Ler().Select(X => X.Id);
+            var idsCategoria = repositorioCategorias.Ler().Select(X => X.Id);
             do
             {
 
@@ -306,7 +309,7 @@ namespace Dashboard
 
             } while (!idsCategoria.Contains(idCategoria) || !eValido);
 
-            Categoria categoria = repositorioCategoria.Ler().FirstOrDefault(X => X.Id == idCategoria);
+            Categoria categoria = repositorioCategorias.Ler().FirstOrDefault(X => X.Id == idCategoria);
             
             return categoria;
         }
@@ -412,7 +415,7 @@ namespace Dashboard
 
             Console.WriteLine("\nInforme a Nova Categoria");
             string nomeCategoria = Console.ReadLine();
-            bool Existe = repositorioCategoria.Ler().Any(x=>x.Nome == nomeCategoria);
+            bool Existe = repositorioCategorias.Ler().Any(x=>x.Nome == nomeCategoria);
 
             if (Existe)
             {
@@ -422,13 +425,13 @@ namespace Dashboard
             }
 
             var novaCategoria = new Categoria(nomeCategoria);
-            repositorioCategoria.Adicionar(novaCategoria);
+            repositorioCategorias.Adicionar(novaCategoria);
 
         }
         
         private static void DeletarCategoria()
         {
-            var categorias = repositorioCategoria.Ler();
+            var categorias = repositorioCategorias.Ler();
             
             if (!categorias.Any())
             {
@@ -454,14 +457,16 @@ namespace Dashboard
             op = op.ToUpper();
             if (op == "S")
             {
-                repositorioCategoria.Remover(confirmar);
+                repositorioCategorias.Remover(confirmar);
                 Console.WriteLine("Ítem Removido com sucesso!");
-                Thread.Sleep(2000);
+                Console.ReadKey();
+
             }
             if (op == "N")
             {
                 Console.WriteLine("Operação Cancelada");
-                Thread.Sleep(2000);
+                Console.ReadKey();
+
                 return;
             }
 
@@ -489,12 +494,13 @@ namespace Dashboard
             {
                 repositorioMarcas.Remover(confirmar);
                 Console.WriteLine("Ítem Removido com sucesso!");
-                Thread.Sleep(2000);
+                Console.ReadKey();
+
             }
             if (op == "N")
             {
                 Console.WriteLine("Operação Cancelada.");
-                Thread.Sleep(2000);
+                Console.ReadKey();
                 return;
             }
 
@@ -521,12 +527,12 @@ namespace Dashboard
             {
                 repositorioProduto.Remover(confirmar);
                 Console.WriteLine("Ítem Removido com sucesso!");
-                Thread.Sleep(2000);
+                Console.ReadKey();            
             }
             if (op == "N")
             {
                 Console.WriteLine("Operação Cancelada.");
-                Thread.Sleep(2000);
+                Console.ReadKey();
                 return;
             }
 
@@ -534,7 +540,7 @@ namespace Dashboard
         
         private static void AtualizarCategoria()
         {
-            var categorias = repositorioCategoria.Ler();
+            var categorias = repositorioCategorias.Ler();
             if (!categorias.Any())
             {
                 Console.WriteLine("Primeiro faça o cadastro");
@@ -543,10 +549,10 @@ namespace Dashboard
             }
             var item = LerCategoria();
             Console.WriteLine("Informe o Novo nome: ");
-            string novoNome = Console.ReadLine();
+            item.Nome = Console.ReadLine();
             Console.WriteLine("Atualizar:\n");
-            Console.WriteLine("ID "+ item.Id);
-            Console.WriteLine("Nome "+ novoNome +"\n");
+            Console.WriteLine("ID " + item.Id);
+            Console.WriteLine("Nome " + item.Nome + "\n");
             Console.WriteLine("CONFIRMA? (S / N) \n");
             string opcao = Console.ReadLine();
             opcao = opcao.ToUpper();
@@ -556,7 +562,7 @@ namespace Dashboard
             }
             if (opcao == "S")
             {
-                repositorioCategoria.Atualizar(item);
+                repositorioCategorias.Atualizar(item);
                 Console.WriteLine("Alterado com sucesso!");
                 Console.ReadKey();
                 
@@ -601,10 +607,14 @@ namespace Dashboard
             static void AtualizarProduto(Produto item)
             {
                 Console.WriteLine("Informe o Novo nome: ");
-                string novoNome = Console.ReadLine();
+                item.Nome = Console.ReadLine();
+                item.Marca = LerMarca();
+                item.Valor = LerValor();
                 Console.WriteLine("Atualizar:\n");
                 Console.WriteLine("ID " + item.Id);
-                Console.WriteLine("Nome " + novoNome + "\n");
+                Console.WriteLine("Nome " + item.Nome);
+                Console.WriteLine("Nome " + item.Marca.Nome);
+                Console.WriteLine("Nome " + item.Valor);
                 Console.WriteLine("CONFIRMA? (S / N) \n");
                 string opcao2 = Console.ReadLine();
                 opcao2 = opcao2.ToUpper();
@@ -614,14 +624,14 @@ namespace Dashboard
                     Console.WriteLine("Operação Cancelada!");
                     return;
                 }
-                item.Nome = novoNome;
+                repositorioProduto.Atualizar(item);
                 Console.WriteLine("Alterado com sucesso!");
                 Console.ReadKey();
             }
 
             static void RemoverAcessorios(Produto item)
             {
-                var listaAcessorios = item.LerAcessorios();
+                var listaAcessorios = item.Acessorios;
                 if (!item.Acessorios.Any())
                 {
                     Console.WriteLine("Não há acessorios cadastrados");
@@ -631,6 +641,7 @@ namespace Dashboard
                 var id = LerInteiro("\nInforme o ID do Acessorio: ");
                 var acessorio = listaAcessorios.FirstOrDefault(x => x.Id == id);
                 item.RemoverAcessorio(acessorio);
+                repositorioProduto.Atualizar(item);
                 Console.ReadKey();
             }
 
@@ -657,17 +668,17 @@ namespace Dashboard
                 Console.WriteLine("\nNão é possivel alterar a Categoria de um acessório.\nSe este Item não pertence a esta Categoria,\nexclua e crie dentro do produto em questão");
 
                 Console.WriteLine("\nInforme o Novo Nome: ");
-                var novoNomeAcessorio = Console.ReadLine();
+                acessorio.Nome = Console.ReadLine();
                 Console.WriteLine("Informe o Nova Marca: ");
-                var novaMarcaAcessorio = LerMarca();
+                acessorio.Marca = LerMarca();
                 Console.WriteLine("Informe a Novo Valor: ");
-                var novoValorAcessorio = LerValor();
+                acessorio.Valor = LerValor();
 
                 Console.Clear();
-                Console.WriteLine("Nome: " + novoNomeAcessorio);
+                Console.WriteLine("Nome: " + acessorio.Nome);
                 Console.WriteLine("Categoria: " + item.Categoria.Nome);
-                Console.WriteLine("Categoria: " + item.Marca.Nome);
-                Console.WriteLine("Valor: " + novoValorAcessorio);
+                Console.WriteLine("Marca: " + acessorio.Marca.Nome);
+                Console.WriteLine("Valor: " + acessorio.Valor);
                 Console.WriteLine("\n Deseja mesmo Alterar?(S/N)");
                 var opcao = Console.ReadLine().ToUpper();
 
@@ -676,17 +687,17 @@ namespace Dashboard
                     Console.WriteLine("Operação Cancelada!");
                     return;
                 }
-                acessorio.Nome = novoNomeAcessorio;
-                acessorio.Marca = novaMarcaAcessorio;
-                acessorio.Valor = novoValorAcessorio;
-                item.AtualizarAcessorio(acessorio);
+               
+                repositorioProduto.Atualizar(item);
                 Console.WriteLine("Acessorio alterado com Sucesso");
                
             }
 
             static void AdicionarAcessorios(Produto item)
             {
+                
                 Console.WriteLine("\nInforme o nome do novo acessório: ");
+                
                 var nomeAcessorio = Console.ReadLine();
                 var marcaAcessorio = LerMarca();
                 var valorAcessorio = LerValor();
@@ -703,7 +714,7 @@ namespace Dashboard
                     return;
                 }
                 item.AdicionarAcessorio(nomeAcessorio, valorAcessorio, marcaAcessorio);
-
+                repositorioProduto.Atualizar(item);
             }
             
             if (!inventario.Any())
@@ -717,7 +728,7 @@ namespace Dashboard
             int op = 1;
             while (op!= 0)
             {
-                Console.WriteLine("\t1 - Alterar dados do produto\n\t2 - Adicionar Acessório\n\t3 - Remover Acessório\n\t4 - Editar Acessório\n\t 0 - Voltar");
+                Console.WriteLine("\t1 - Alterar dados do produto\n\t2 - Adicionar Acessório\n\t3 - Remover Acessório\n\t4 - Editar Acessório\n\t0 - Voltar");
                 op = LerInteiro("\nEscolha uma Opção: ");
                 switch (op)
                 {
@@ -758,11 +769,6 @@ namespace Dashboard
             } while (!eValido);
             return valor;
         }
-
-
-
-
-        
 
     }
 }
