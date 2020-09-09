@@ -1,12 +1,8 @@
-﻿using Dashboard.Infraestrutura;
+﻿using Dashboard.Apresentacao;
+using Dashboard.Infraestrutura;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Dashboard
 {
@@ -16,18 +12,18 @@ namespace Dashboard
         public static RepositorioArquivoCategoria repositorioCategorias = new RepositorioArquivoCategoria();
         public static RepositorioArquivoProduto repositorioProduto = new RepositorioArquivoProduto();
         
-
+        
         static void Main(string[] args)
         {
-            //var classe1 = new Classe1();
-            //return;
+            
+            
             var marcas = repositorioMarcas.Ler();
             var categorias = repositorioCategorias.Ler();
             var inventario = repositorioProduto.Ler();
-         
+
             //Menu
-            int op=1;
-            while (op!=0)
+            int op = 1;
+            while (op != 0)
             {
                 Console.Clear();
                 Console.WriteLine("\n\n1 - Cadastrar Marca\n");
@@ -43,7 +39,7 @@ namespace Dashboard
                 Console.WriteLine("11 - Atualizar Categoria\n");
                 Console.WriteLine("12 - Atualizar Marca\n");
                 Console.WriteLine("13 - Atualizar Produto\n");
-              
+
                 Console.WriteLine("Escolha uma opção: ");
                 op = Convert.ToInt32(Console.ReadLine());
 
@@ -57,7 +53,7 @@ namespace Dashboard
                         break;
 
                     case 2:
-                        
+
                         Console.Clear();
                         Console.WriteLine("Cadastrar Categoria \n");
                         MostrarCategorias();
@@ -83,27 +79,19 @@ namespace Dashboard
 
                     case 6:
                         Console.Clear();
-                        if (inventario.Any())
-                        {
-                            Console.WriteLine("Não Há Itens a ser mostrado");
-                            Console.ReadKey();
-                            break;
-                        }
+                        
                         var categoria = LerCategoria();
                         Console.WriteLine("Mostrar Por CategoriaS\n");
                         MostrarPor(categoria);
+                        Console.ReadKey();
                         break;
                     case 7:
                         Console.Clear();
-                        if (inventario.Any())
-                        {
-                            Console.WriteLine("Não Há Itens a ser mostrado");
-                            Console.ReadKey();
-                            break;
-                        }
+                        
                         var marca = LerMarca();
                         Console.WriteLine("Mostrar Por Marca\n");
                         MostrarPor(marca);
+                        Console.ReadKey();
                         break;
 
                     case 8:
@@ -111,7 +99,7 @@ namespace Dashboard
                         MostrarCategorias();
                         DeletarCategoria();
                         break;
-                    
+
                     case 9:
                         MostrarMarcas();
                         DeletarMarca();
@@ -141,14 +129,20 @@ namespace Dashboard
                         Atualizar();
                         break;
 
-                    default: 
+                    case 14:
+                        Console.Clear();
+                        CalcularInventario();
+                        Console.ReadKey();
+                        break;
+
+                    default:
                         Console.WriteLine("OPÇAO INVALIDA, ESCOLHA SOMENTE OS ITENS ACIMA");
                         Console.ReadKey();
                         break;
                 }
             }
         }
-        
+
         private static void MostrarMarcas()
         {
             Console.WriteLine("\n\nLista de Marcas\n");
@@ -157,7 +151,7 @@ namespace Dashboard
                 Console.WriteLine(marca.Id + " - " + marca.Nome);
             }
         }
-        
+
         private static void MostrarCategorias()
         {
             Console.WriteLine("Lista de Categoria\n");
@@ -166,7 +160,7 @@ namespace Dashboard
                 Console.WriteLine(categoria.Id + " - " + categoria.Nome);
             }
         }
-        
+
         private static void MostrarInventario(IEnumerable<Produto> inventario)
         {
 
@@ -186,7 +180,7 @@ namespace Dashboard
                 Console.WriteLine("\n Acessórios: ");
                 if (!Produto.Acessorios.Any())
                 {
-                    Console.WriteLine("Não Há Acessorios Cadastrados");
+                    Console.WriteLine("Não Há Acessorios Cadastrados\n");
                     continue;
                 }
                 foreach (var acessorio in Produto.Acessorios)
@@ -196,19 +190,19 @@ namespace Dashboard
                     Console.WriteLine("\tMarca:" + acessorio.Marca.Nome);
                     Console.WriteLine("\tCategoria:" + acessorio.Categoria.Nome);
                     var valor = acessorio.Valor == 0 ? "Stock Item" : acessorio.Valor.ToString();
-                    Console.WriteLine("\tValor: " + valor );
+                    Console.WriteLine("\tValor: " + valor);
                 }
                 Console.WriteLine("\n\n");
             }
-            
+
         }
-        
+
         private static void MostrarInventario()
         {
             var inventario = repositorioProduto.Ler();
             MostrarInventario(inventario);
         }
-        
+
         private static void CadastrarProduto()
         {
             IEnumerable<Marca> marcas = repositorioMarcas.Ler();
@@ -224,12 +218,12 @@ namespace Dashboard
             Console.WriteLine("\nInforme o nome do produto:\n");
             string nomeProduto = Console.ReadLine();
 
-       
+
             Categoria interCat = LerCategoria();
 
             Marca interMarca = LerMarca();
 
-            float valor = LerValor();
+            float valor = Helper.LerValor();
 
             //criando e adicionando um novo Produto ao inventario
             Produto novoProduto = new Produto(nomeProduto, interCat, interMarca, valor);
@@ -239,7 +233,7 @@ namespace Dashboard
             escolha = escolha.ToUpper();
             if (escolha == "S")
             {
-                var qtd = LerInteiro("Quantos itens quer cadastrar?\n");
+                var qtd = Helper.LerInteiro("Quantos itens quer cadastrar?");
                 for (int i = 0; i < qtd; i++)
                 {
                     Console.WriteLine(i + 1 + "º item\n Nome:");
@@ -247,7 +241,7 @@ namespace Dashboard
                     novoProduto.AdicionarAcessorio(acessorioNome);
                 }
             }
-            
+
 
             if (inventario.Any())
             {
@@ -258,31 +252,12 @@ namespace Dashboard
             repositorioProduto.Adicionar(novoProduto);
 
         }
-        
-        private static float LerValor()
-        {
-            float valor;
-            bool eValido;
-            do
-            {
-                Console.Clear();
-                Console.WriteLine("Informe o valor do item;\n");
 
-                eValido = float.TryParse(Console.ReadLine(), out valor);
-                if (!eValido)
-                {
-                    Console.WriteLine("É necessário informar um valor Válido");
-                    Console.ReadKey();
-                }
-            } while (!eValido);
-            return valor;
-        }
-        
         private static Categoria LerCategoria()
         {
 
             bool eValido = true;
-            int idCategoria=0;
+            int idCategoria = 0;
             var idsCategoria = repositorioCategorias.Ler().Select(X => X.Id);
             do
             {
@@ -291,10 +266,10 @@ namespace Dashboard
                 MostrarCategorias();
                 Console.WriteLine("\nInforme o id da categoria\n");
 
-               
-                    eValido = int.TryParse(Console.ReadLine(), out idCategoria);
-            
-              
+
+                eValido = int.TryParse(Console.ReadLine(), out idCategoria);
+
+
 
                 if (!eValido)
                 {
@@ -310,10 +285,10 @@ namespace Dashboard
             } while (!idsCategoria.Contains(idCategoria) || !eValido);
 
             Categoria categoria = repositorioCategorias.Ler().FirstOrDefault(X => X.Id == idCategoria);
-            
+
             return categoria;
         }
-        
+
         private static Marca LerMarca()
         {
             var marcas = repositorioMarcas.Ler();
@@ -343,7 +318,7 @@ namespace Dashboard
 
             return marca;
         }
-        
+
         private static Produto LerProduto()
         {
             var inventario = repositorioProduto.Ler();
@@ -372,14 +347,14 @@ namespace Dashboard
             var produto = inventario.FirstOrDefault(X => X.Id == idProduto);
             return produto;
         }
-        
+
         private static void MostrarPor(Categoria categoriaSelecionada)
         {
             var inventario = repositorioProduto.Ler();
             var print = inventario.Where(X => X.Categoria == categoriaSelecionada);
             MostrarInventario(print);
         }
-        
+
         private static void MostrarPor(Marca marcaSelecionada)
         {
 
@@ -388,7 +363,7 @@ namespace Dashboard
 
             MostrarInventario(print);
         }
-        
+
         private static void CadastrarMarca()
         {
             Console.WriteLine("Informe a Nova Marca");
@@ -408,14 +383,14 @@ namespace Dashboard
             repositorioMarcas.Adicionar(novaMarca);
 
         }
-        
+
         private static void CadastrarCategoria()
         {
-            
+
 
             Console.WriteLine("\nInforme a Nova Categoria");
             string nomeCategoria = Console.ReadLine();
-            bool Existe = repositorioCategorias.Ler().Any(x=>x.Nome == nomeCategoria);
+            bool Existe = repositorioCategorias.Ler().Any(x => x.Nome == nomeCategoria);
 
             if (Existe)
             {
@@ -428,11 +403,11 @@ namespace Dashboard
             repositorioCategorias.Adicionar(novaCategoria);
 
         }
-        
+
         private static void DeletarCategoria()
         {
             var categorias = repositorioCategorias.Ler();
-            
+
             if (!categorias.Any())
             {
                 Console.WriteLine("Nenhum item em categoria");
@@ -472,7 +447,7 @@ namespace Dashboard
 
 
         }
-        
+
         private static void DeletarMarca()
         {
             var marcas = repositorioMarcas.Ler();
@@ -482,7 +457,7 @@ namespace Dashboard
                 return;
             }
             var confirmar = LerMarca();
-        
+
             Console.WriteLine("\nID: " + confirmar.Id);
             Console.WriteLine("Nome: " + confirmar.Nome);
 
@@ -505,7 +480,7 @@ namespace Dashboard
             }
 
         }
-        
+
         private static void DeletarInventario()
         {
             var inventario = repositorioProduto.Ler();
@@ -515,7 +490,7 @@ namespace Dashboard
                 return;
             }
             var confirmar = LerProduto();
-        
+
             Console.WriteLine("\nID: " + confirmar.Id);
             Console.WriteLine("Nome: " + confirmar.Nome);
 
@@ -527,7 +502,7 @@ namespace Dashboard
             {
                 repositorioProduto.Remover(confirmar);
                 Console.WriteLine("Ítem Removido com sucesso!");
-                Console.ReadKey();            
+                Console.ReadKey();
             }
             if (op == "N")
             {
@@ -537,7 +512,7 @@ namespace Dashboard
             }
 
         }
-        
+
         private static void AtualizarCategoria()
         {
             var categorias = repositorioCategorias.Ler();
@@ -565,10 +540,10 @@ namespace Dashboard
                 repositorioCategorias.Atualizar(item);
                 Console.WriteLine("Alterado com sucesso!");
                 Console.ReadKey();
-                
+
             }
         }
-        
+
         private static void AtualizarMarca()
         {
             var marcas = repositorioMarcas.Ler();
@@ -592,15 +567,15 @@ namespace Dashboard
             {
                 return;
             }
-            
+
             repositorioMarcas.Atualizar(item);
             Console.WriteLine("Alterado com sucesso!");
             Console.ReadKey();
 
         }
-        
+
         private static void Atualizar()
-        {   
+        {
 
             IEnumerable<Produto> inventario = repositorioProduto.Ler();
 
@@ -609,7 +584,7 @@ namespace Dashboard
                 Console.WriteLine("Informe o Novo nome: ");
                 item.Nome = Console.ReadLine();
                 item.Marca = LerMarca();
-                item.Valor = LerValor();
+                item.Valor = Helper.LerValor();
                 Console.WriteLine("Atualizar:\n");
                 Console.WriteLine("ID " + item.Id);
                 Console.WriteLine("Nome " + item.Nome);
@@ -638,7 +613,7 @@ namespace Dashboard
                     Console.ReadKey();
                     return;
                 }
-                var id = LerInteiro("\nInforme o ID do Acessorio: ");
+                var id = Helper.LerInteiro("\nInforme o ID do Acessorio: ");
                 var acessorio = listaAcessorios.FirstOrDefault(x => x.Id == id);
                 item.RemoverAcessorio(acessorio);
                 repositorioProduto.Atualizar(item);
@@ -655,7 +630,7 @@ namespace Dashboard
                 }
                 ;
                 var listaAcessorios = item.LerAcessorios();
-                var escolha = LerInteiro("Informe o ID do Acessorio a ser alterado");
+                var escolha = Helper.LerInteiro("Informe o ID do Acessorio a ser alterado");
                 var acessorio = listaAcessorios.FirstOrDefault(x => x.Id == escolha);
                 if (acessorio == null)
                 {
@@ -672,7 +647,7 @@ namespace Dashboard
                 Console.WriteLine("Informe o Nova Marca: ");
                 acessorio.Marca = LerMarca();
                 Console.WriteLine("Informe a Novo Valor: ");
-                acessorio.Valor = LerValor();
+                acessorio.Valor = Helper.LerValor();
 
                 Console.Clear();
                 Console.WriteLine("Nome: " + acessorio.Nome);
@@ -687,20 +662,20 @@ namespace Dashboard
                     Console.WriteLine("Operação Cancelada!");
                     return;
                 }
-               
+
                 repositorioProduto.Atualizar(item);
                 Console.WriteLine("Acessorio alterado com Sucesso");
-               
+
             }
 
             static void AdicionarAcessorios(Produto item)
             {
-                
+
                 Console.WriteLine("\nInforme o nome do novo acessório: ");
-                
+
                 var nomeAcessorio = Console.ReadLine();
                 var marcaAcessorio = LerMarca();
-                var valorAcessorio = LerValor();
+                var valorAcessorio = Helper.LerValor();
 
 
                 Console.WriteLine("Nome: " + nomeAcessorio);
@@ -716,7 +691,7 @@ namespace Dashboard
                 item.AdicionarAcessorio(nomeAcessorio, valorAcessorio, marcaAcessorio);
                 repositorioProduto.Atualizar(item);
             }
-            
+
             if (!inventario.Any())
             {
                 Console.WriteLine("Primeiro faça o cadastro");
@@ -726,10 +701,10 @@ namespace Dashboard
             var item = LerProduto();
 
             int op = 1;
-            while (op!= 0)
+            while (op != 0)
             {
                 Console.WriteLine("\t1 - Alterar dados do produto\n\t2 - Adicionar Acessório\n\t3 - Remover Acessório\n\t4 - Editar Acessório\n\t0 - Voltar");
-                op = LerInteiro("\nEscolha uma Opção: ");
+                op = Helper.LerInteiro("\nEscolha uma Opção: ");
                 switch (op)
                 {
                     case 1:
@@ -749,26 +724,21 @@ namespace Dashboard
                 }
             }
         }
-        
-        private static int LerInteiro(string msg)
+
+        private static void CalcularInventario()
         {
-            int valor;
-            bool eValido;
-            do
+            var inventario = repositorioProduto.Ler();
+            
+            float soma = 0;
+            foreach (var item in inventario)
             {
-                
-                Console.WriteLine(msg);
-
-                eValido = int.TryParse(Console.ReadLine(), out valor);
-                if (!eValido)
+                soma += item.Valor;
+                foreach (var item2 in item.Acessorios)
                 {
-                    Console.Clear();
-                    Console.WriteLine("É necessário informar um valor Válido");
-                    Console.ReadKey();
+                    soma += item2.Valor;
                 }
-            } while (!eValido);
-            return valor;
+            }
+            Console.WriteLine(soma);
         }
-
     }
 }

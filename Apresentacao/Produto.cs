@@ -33,7 +33,8 @@ namespace Dashboard
         public IEnumerable<Produto> Acessorios => acessorios;
 
         private Produto ProdutoPai { get; set; }
-        
+
+
         public Produto(string nome, Categoria categoria, Marca marca, float valor)
         {
             Nome = nome;
@@ -82,6 +83,9 @@ namespace Dashboard
             acessorios.Remove(item);
        
         }
+
+        public float Total => Acessorios.Sum(x => x.Valor) + Valor;
+
     }
 
 }

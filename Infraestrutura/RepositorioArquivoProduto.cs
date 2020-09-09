@@ -10,15 +10,15 @@ namespace Dashboard.Infraestrutura
     class RepositorioArquivoProduto
     {
         private readonly List<Produto> Produtos = new List<Produto>();
-       
+
         const string folder = "D:\\databaseDashboard\\Inventario.txt";
-        
+
         public RepositorioArquivoProduto()
         {
             StreamReader file = new StreamReader(folder);
             string line = file.ReadToEnd();
             file.Close();
-            if (line!="")
+            if (line != "")
             {
                 Produtos = JsonConvert.DeserializeObject<List<Produto>>(line);
 
@@ -34,10 +34,10 @@ namespace Dashboard.Infraestrutura
             txt.Write(ListaProdutos);
             txt.Close();
         }
-        
+
         public IEnumerable<Produto> Ler()
         {
-            
+
             var json = JsonConvert.SerializeObject(Produtos);
             List<Produto> listaSemReferencia = JsonConvert.DeserializeObject<List<Produto>>(json);
 
@@ -73,6 +73,7 @@ namespace Dashboard.Infraestrutura
             Produtos.Remove(item);
             SalvarParaArquivo();
         }
-        
+
+
     }
 }
