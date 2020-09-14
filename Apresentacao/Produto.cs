@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Dashboard
 {
-    class Produto:EntidadeBase
+    public class Produto:EntidadeBase
     {
         public string Nome { get; set; }
        
