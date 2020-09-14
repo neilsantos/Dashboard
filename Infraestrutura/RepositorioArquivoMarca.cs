@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Dashboard.Infraestrutura
 {
-    class RepositorioArquivoMarca
+    public class RepositorioArquivoMarca : IRepositorioMarca
     {
         private readonly List<Marca> Marcas = new List<Marca>();
         const string folder = "D:\\databaseDashboard\\Marcas.txt";

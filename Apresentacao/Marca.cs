@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Dashboard
 {
-    class Marca:EntidadeBase
+    public class Marca:EntidadeBase
     {
         public string Nome { get; set; }
 

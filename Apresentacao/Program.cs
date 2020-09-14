@@ -8,14 +8,14 @@ namespace Dashboard
 {
     class Program
     {
-        public static RepositorioArquivoMarca repositorioMarcas = new RepositorioArquivoMarca();
+        public static IRepositorioMarca repositorioMarcas = new RepositorioMarca();
         public static RepositorioArquivoCategoria repositorioCategorias = new RepositorioArquivoCategoria();
         public static RepositorioArquivoProduto repositorioProduto = new RepositorioArquivoProduto();
         
         
         static void Main(string[] args)
         {
-            
+
             
             var marcas = repositorioMarcas.Ler();
             var categorias = repositorioCategorias.Ler();

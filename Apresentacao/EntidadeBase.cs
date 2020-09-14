@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Dashboard
 {
-    class EntidadeBase
+    public class EntidadeBase
     {
         public int Id { get; set; }
         

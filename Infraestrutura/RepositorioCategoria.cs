@@ -12,7 +12,7 @@ namespace Dashboard.Infraestrutura
 
         public RepositorioCategoria()
         {
-            //PopularCategoria();
+            PopularCategoria();
         }
 
         private readonly List<Categoria> Categorias = new List<Categoria>();
