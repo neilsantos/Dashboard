@@ -1,5 +1,6 @@
 ﻿using Dashboard.Apresentacao;
 using Dashboard.Infraestrutura;
+using Dashboard.Infraestrutura.Intefaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ namespace Dashboard
 {
     class Program
     {
-        public static IRepositorioMarca repositorioMarcas = new RepositorioMarca();
-        public static RepositorioArquivoCategoria repositorioCategorias = new RepositorioArquivoCategoria();
-        public static RepositorioArquivoProduto repositorioProduto = new RepositorioArquivoProduto();
+        public static IRepositorioMarca repositorioMarcas = new RepositorioArquivoMarca();
+        public static IRepositorioCategoria repositorioCategorias = new RepositorioArquivoCategoria();
+        public static IRepositorioProduto repositorioProduto = new RepositorioArquivoProduto();
         
         
         static void Main(string[] args)

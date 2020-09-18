@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Dashboard.Infraestrutura
+namespace Dashboard
 {
     public interface IRepositorio<T> where T:EntidadeBase
     {

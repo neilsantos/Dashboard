@@ -1,14 +1,41 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Dashboard
+{
+    public class RepositorioArquivo<T> : IRepositorio<T> where T : EntidadeBase
     {
-    public class Repositorio<T> : IRepositorio<T> where T:EntidadeBase
-    {
+        string Folder;
+
         List<T> itens = new List<T>();
-        
+        public RepositorioArquivo(string folder)
+        {
+            Folder = folder;
+            StreamReader file = new StreamReader(folder);
+            string line = file.ReadToEnd();
+            file.Close();
+
+            if (line == "")
+            {
+                return;
+            }
+
+            itens = JsonConvert.DeserializeObject<List<T>>(line);
+        }
+
+        private void SalvarParaArquivo()
+        {
+            var Lista = JsonConvert.SerializeObject(itens);
+
+            //Gravando no arquivo de texto
+            TextWriter txt = new StreamWriter(Folder);
+            txt.Write(Lista);
+            txt.Close();
+        }
+
         public IEnumerable<T> Ler()
         {
             var json = JsonConvert.SerializeObject(itens);
@@ -30,7 +57,7 @@ namespace Dashboard
             var obj = itens.FirstOrDefault(x => x.Id == item.Id);
             if (obj == null)
             {
-            throw new Exception("Item Não Encontrado na lista");
+                throw new Exception("Item Não Encontrado na lista");
             }
 
             itens.Remove(obj);
