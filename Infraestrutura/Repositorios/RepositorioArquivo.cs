@@ -48,6 +48,7 @@ namespace Dashboard
             itens.Add(item);
             int maiorId = itens.Max(X => X.Id);
             item.Id = ++maiorId;
+            SalvarParaArquivo();
             return item;
 
         }

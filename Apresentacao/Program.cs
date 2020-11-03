@@ -1,4 +1,5 @@
 ﻿using Dashboard.Apresentacao;
+using Dashboard.Apresentacao.Controllers;
 using Dashboard.Infraestrutura;
 using Dashboard.Infraestrutura.Intefaces;
 using System;
@@ -17,29 +18,15 @@ namespace Dashboard
         static void Main(string[] args)
         {
 
-            
             var marcas = repositorioMarcas.Ler();
             var categorias = repositorioCategorias.Ler();
             var inventario = repositorioProduto.Ler();
-
+            var homeController = new HomeController();
             //Menu
             int op = 1;
             while (op != 0)
             {
-                Console.Clear();
-                Console.WriteLine("\n\n1 - Cadastrar Marca\n");
-                Console.WriteLine("2 - Cadastrar Categoria\n");
-                Console.WriteLine("3 - Cadastrar Produto\n ");
-                Console.WriteLine("4 - Exibir Marcas e Categorias\n ");
-                Console.WriteLine("5 - Listar Inventário\n");
-                Console.WriteLine("6 - Mostrar por Categoria\n");
-                Console.WriteLine("7 - Mostrar por Marca\n");
-                Console.WriteLine("8 - Remover Categoria\n");
-                Console.WriteLine("9 - Remover Marca\n");
-                Console.WriteLine("10 - Remover Produto\n");
-                Console.WriteLine("11 - Atualizar Categoria\n");
-                Console.WriteLine("12 - Atualizar Marca\n");
-                Console.WriteLine("13 - Atualizar Produto\n");
+                homeController.Index();
 
                 Console.WriteLine("Escolha uma opção: ");
                 op = Convert.ToInt32(Console.ReadLine());
@@ -52,7 +39,7 @@ namespace Dashboard
                         MostrarMarcas();
                         CadastrarMarca();
                         break;
-
+                
                     case 2:
 
                         Console.Clear();
