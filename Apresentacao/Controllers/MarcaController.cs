@@ -49,7 +49,6 @@ namespace Dashboard.Apresentacao.Controllers
                     break;
                 default:
                     break;
-                    break;
             }
         }
 
@@ -99,7 +98,7 @@ namespace Dashboard.Apresentacao.Controllers
                     Mensagens = new List<String> { "Marca Não Encontrada. Verifique e tente novamente" }
 
                 };
-                return new Retorno<Marca>(atualizar); 
+                return status;
             }
             lista.Atualizar(atualizar);
 
