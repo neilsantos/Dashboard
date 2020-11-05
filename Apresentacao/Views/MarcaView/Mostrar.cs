@@ -13,6 +13,7 @@ namespace Dashboard.Apresentacao.Views.MarcaView
             {
                 Console.WriteLine(marca.Id + " - " + marca.Nome);
             }
+            Console.ReadKey();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Dashboard.Apresentacao.Controllers
         {
             var menu = new Menu();
             menu.Print();
-            var opcao = Helper.LerInteiro("Digite a Opção");
+            var opcao = Helper.LerInteiro("MenuPrincipal: Digite a Opção");
             var opcaoDoMenu = (HomeMenu)opcao;
             switch (opcaoDoMenu)
             {

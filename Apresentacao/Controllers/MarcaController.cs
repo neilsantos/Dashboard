@@ -4,6 +4,7 @@ using Dashboard.Infraestrutura;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Dashboard.Apresentacao.Controllers
 {
@@ -12,8 +13,10 @@ namespace Dashboard.Apresentacao.Controllers
         public void Index()
         {
             var menu = new Menu();
+            Console.Clear();
+
             menu.Print();
-            var opcao = Helper.LerInteiro("Escolha uma opção");
+            var opcao = Helper.LerInteiro("MenuMarca: Escolha uma opção");
             var opcaoDoMenu = (MarcaMenu)opcao;
             switch (opcaoDoMenu)
             {
@@ -23,54 +26,39 @@ namespace Dashboard.Apresentacao.Controllers
                     var retorno = Cadastrar(marca);
                     new Mensagem<Marca>().Print(retorno);
                     break;
+
                 case MarcaMenu.Exibir:
                     var listaMarcas = Mostrar();
                     new Mostrar().Print(listaMarcas);
                     break;
+
                 case MarcaMenu.Remover:
+                    new Remover().Print(Mostrar());
+                    var marcaId = Helper.LerInteiro("Escolha o ID da marca a ser removido");
+                    new Remover().Confirmar();
+                    string op = Console.ReadLine().ToUpper();
+                    if (op == "S") Remover(marcaId);
                     break;
+
                 case MarcaMenu.Atualizar:
+                    new Remover().Print(Mostrar());
+                    var id = Helper.LerInteiro("Escolha o ID da marca a ser atualizado");
+                    new Mensagem<Marca>().Print(Atualizar(id));
                     break;
                 case MarcaMenu.Retornar:
                     break;
                 default:
                     break;
+                    break;
             }
         }
-        
-        public Retorno<Marca> Remover()
+
+        public void Remover(int marcaId)
         {
-            var repositorioMarcas = new RepositorioArquivoMarca();
-            var marcas = repositorioMarcas.Ler();
-            if (!marcas.Any())
-            {
-                var status = new Retorno<Marca>
-                {
+            var lista = new RepositorioArquivoMarca();
+            var remover = lista.Ler().FirstOrDefault(x => x.Id == marcaId);
+            lista.Remover(remover);
 
-                    DeuCerto = false,
-                    Mensagens = new List<string> { "Que Pena, não tem nada aqui ainda. Volte e Cadastre uma Marca =)" }
-                };
-                return status;
-            }
-
-            string op = "";
-            Console.WriteLine("\nDeseja Excluir? (S / N)");
-            op = Console.ReadLine();
-            op = op.ToUpper();
-            if (op == "S")
-            {
-                repositorioMarcas.Remover("");
-                Console.WriteLine("Ítem Removido com sucesso!");
-                Console.ReadKey();
-
-            }
-            if (op == "N")
-            {
-                Console.WriteLine("Operação Cancelada.");
-                Console.ReadKey();
-                return;
-            }
-            return;
         }
 
         public IEnumerable<Marca> Mostrar()
@@ -83,7 +71,7 @@ namespace Dashboard.Apresentacao.Controllers
         {
             var repositorioMarcas = new RepositorioArquivoMarca();
             bool Existe = repositorioMarcas.Ler()
-               .Any(X => X.Nome == marca.Nome) ;
+               .Any(X => X.Nome == marca.Nome);
 
             if (Existe)
             {
@@ -92,11 +80,31 @@ namespace Dashboard.Apresentacao.Controllers
                     DeuCerto = false,
                     Mensagens = new List<string> { "ESSA MARCA JA EXISTE, ADICIONE UMA DIFERENTE" }
                 };
-                
+
                 return status;
             }
             repositorioMarcas.Adicionar(marca);
             return new Retorno<Marca>(marca);
         }
+
+        public Retorno<Marca> Atualizar(int id)
+        {
+            var lista = new RepositorioArquivoMarca();
+            var atualizar = lista.Ler().FirstOrDefault(x => x.Id == id);
+            if (atualizar == null)
+            {
+                var status = new Retorno<Marca>
+                {
+                    DeuCerto = false,
+                    Mensagens = new List<String> { "Marca Não Encontrada. Verifique e tente novamente" }
+
+                };
+                return new Retorno<Marca>(atualizar); 
+            }
+            lista.Atualizar(atualizar);
+
+            return new Retorno<Marca>(atualizar);
+        }
+       
     }
 }

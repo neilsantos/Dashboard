@@ -69,6 +69,7 @@ namespace Dashboard
         {
             var obj = itens.FirstOrDefault(X => X.Id == item.Id);
             itens.Remove(obj);
+            SalvarParaArquivo();
         }
     }
 }
